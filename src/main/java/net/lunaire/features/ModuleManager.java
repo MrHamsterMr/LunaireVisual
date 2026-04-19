@@ -24,6 +24,7 @@ public class ModuleManager {
                 }
             }
         });
+        modules.add(new Module("FastSwap", Category.COMBAT, 0) {});
         modules.add(new Module("TotemPop", Category.COMBAT, 0) {});
 
         // VISUAL
@@ -57,11 +58,9 @@ public class ModuleManager {
             }
         });
 
-        // Остальные заглушки для меню
-        String[] misc = {"FreeLook", "Waypoints", "Friends", "FastSwap", "Optimization", "HitColor", "HitboxColor", "Macros", "ShulkerView", "Crosshair"};
-        for (String s : misc) {
-            modules.add(new Module(s, Category.MISC, 0) {});
-        }
+        // Заглушки для всех остальных 23 пунктов
+        String[] misc = {"Waypoints", "Friends", "ItemScroller", "Optimization", "FreeLook", "BlockOverlay", "Crosshair", "CustomHand", "Macros", "ShulkerView", "HitboxColor", "InfoHUD", "ChunkOpt"};
+        for (String s : misc) modules.add(new Module(s, Category.MISC, 0) {});
     }
 
     public static List<Module> getModules() { return modules; }
