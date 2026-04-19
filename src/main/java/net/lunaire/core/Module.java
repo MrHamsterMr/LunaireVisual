@@ -29,6 +29,7 @@ public abstract class Module {
     public void onRenderHud(DrawContext context) {}
 
     public String getName() { return name; }
+    public Category getCategory() { return category; } // Тот самый метод
     public boolean isEnabled() { return enabled; }
     public int getKey() { return key; }
     public void setKey(int key) { this.key = key; }
