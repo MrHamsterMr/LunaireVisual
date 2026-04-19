@@ -14,24 +14,28 @@ public class ClickGuiScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, width, height, 0x70000000);
+        context.fill(0, 0, width, height, 0x50000000); // Мягкое затемнение
+
         int x = 40;
         for (Category cat : Category.values()) {
             int y = 40;
-            context.fill(x, y, x + 100, y + 15, 0xFF00FBFF);
-            context.drawCenteredTextWithShadow(textRenderer, cat.name(), x + 50, y + 4, -1);
-            y += 18;
+            // Стильная шапка категории
+            context.fill(x - 2, y - 2, x + 92, y + 15, 0xFF00FBFF);
+            context.drawCenteredTextWithShadow(textRenderer, cat.name(), x + 45, y + 3, 0xFF000000);
+            y += 20;
 
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    int color = m.isEnabled() ? 0xFF00FBFF : 0xFFFFFFFF;
-                    if (m.binding) color = 0xFFFFAA00;
-                    context.fill(x, y, x + 100, y + 14, 0x90101010);
-                    context.drawText(textRenderer, m.getName(), x + 5, y + 3, color, false);
+                    boolean hovered = mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14;
+                    int bgColor = m.isEnabled() ? 0xBF00FBFF : (hovered ? 0x90303030 : 0x90151515);
+                    if (m.binding) bgColor = 0xFFFFAA00;
+
+                    context.fill(x, y, x + 90, y + 14, bgColor);
+                    context.drawText(textRenderer, m.getName(), x + 5, y + 3, m.isEnabled() ? 0xFF000000 : -1, false);
                     y += 16;
                 }
             }
-            x += 110;
+            x += 105;
         }
     }
 
@@ -39,18 +43,24 @@ public class ClickGuiScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int x = 40;
         for (Category cat : Category.values()) {
-            int y = 58; 
+            int y = 60;
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    if (mouseX >= x && mouseX <= x + 100 && mouseY >= y && mouseY <= y + 14) {
-                        if (button == 0) m.toggle();
-                        if (button == 1) m.binding = !m.binding;
+                    if (mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14) {
+                        if (m.binding) {
+                            m.setKey(button, true); // Бинд на кнопку мыши!
+                            m.binding = false;
+                            Config.save();
+                        } else {
+                            if (button == 0) m.toggle();
+                            if (button == 1) m.binding = true;
+                        }
                         return true;
                     }
                     y += 16;
                 }
             }
-            x += 110;
+            x += 105;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -59,8 +69,7 @@ public class ClickGuiScreen extends Screen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         for (Module m : ModuleManager.getModules()) {
             if (m.binding) {
-                if (keyCode == GLFW.GLFW_KEY_ESCAPE) m.setKey(0);
-                else m.setKey(keyCode);
+                m.setKey(keyCode, false);
                 m.binding = false;
                 Config.save();
                 return true;
