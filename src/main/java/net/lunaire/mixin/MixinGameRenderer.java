@@ -15,8 +15,9 @@ public class MixinGameRenderer {
     private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> info) {
         Module m = ModuleManager.getModule("Zoom");
         if (m != null && m.isEnabled()) {
-            double value = info.getReturnValue();
-            info.setReturnValue(value / 4.0);
+            // Безопасно берем значение и делим его
+            double currentFov = info.getReturnValue();
+            info.setReturnValue(currentFov / 4.0);
         }
     }
 }
