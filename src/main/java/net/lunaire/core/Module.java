@@ -8,8 +8,8 @@ public abstract class Module {
     private String name;
     private Category category;
     private boolean enabled = false;
-    private int key; // Код клавиши
-    public boolean binding = false; // Режим прослушивания новой клавиши
+    private int key;
+    public boolean binding = false;
 
     public Module(String name, Category category, int defaultKey) {
         this.name = name;
@@ -27,7 +27,6 @@ public abstract class Module {
     public void onTick() {}
     public void onRenderHud(DrawContext context) {}
 
-    // Геттеры и сеттеры
     public String getName() { return name; }
     public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
