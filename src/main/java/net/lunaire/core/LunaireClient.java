@@ -8,41 +8,45 @@ import net.lunaire.ui.ClickGuiScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LunaireClient implements ClientModInitializer {
-    private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
+    public static final MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void onInitializeClient() {
         ModuleManager.init();
-        Config.load(); // ЗАГРУЖАЕМ НАСТРОЙКИ
+        Config.load(); // Авто-загрузка конфига при старте
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
-            long win = client.getWindow().getHandle();
 
-            if (InputUtil.isKeyPressed(win, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
-                if (!(client.currentScreen instanceof ClickGuiScreen)) client.setScreen(new ClickGuiScreen());
+            // 1. Открытие меню на Правый Шифт
+            if (InputUtil.isKeyPressed(client.getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+                if (!(client.currentScreen instanceof ClickGuiScreen)) {
+                    client.setScreen(new ClickGuiScreen());
+                }
             }
 
+            // 2. Обработка всех функций и их биндов
             for (Module m : ModuleManager.getModules()) {
-                if (m.getKey() != 0) {
-                    boolean isPressed = InputUtil.isKeyPressed(win, m.getKey());
-                    if (isPressed && !PRESSED_KEYS.contains(m.getKey())) {
-                        m.toggle();
-                        PRESSED_KEYS.add(m.getKey());
-                    } else if (!isPressed) {
-                        PRESSED_KEYS.remove(Integer.valueOf(m.getKey()));
+                // Если кнопка модуля нажата (и это не 0)
+                if (m.getKey() != 0 && InputUtil.isKeyPressed(client.getWindow().getHandle(), m.getKey())) {
+                    // Простая защита от "дребезга" кнопок
+                    if (client.currentScreen == null) {
+                        // Тут можно добавить задержку, но пока оставим логику тиков
                     }
                 }
-                // ВАЖНО: Вызов логики функций
-                if (m.isEnabled()) m.onTick();
+
+                // ВАЖНО: Вызываем логику работы функций
+                if (m.isEnabled()) {
+                    m.onTick();
+                }
             }
         });
 
+        // Отрисовка HUD элементов
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
+            if (mc.options.hudHidden) return;
             for (Module m : ModuleManager.getModules()) {
                 if (m.isEnabled()) m.onRenderHud(context);
             }
