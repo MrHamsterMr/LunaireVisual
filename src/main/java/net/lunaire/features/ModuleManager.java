@@ -1,7 +1,6 @@
-package net.lunaire.features;
+package net.lunaire.core;
 
-import net.lunaire.core.Module;
-import net.lunaire.core.Category;
+import net.lunaire.features.visual.ArmorHUD; // ВАЖНО: Добавлен импорт
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +9,13 @@ public class ModuleManager {
 
     public static void init() {
         modules.clear();
-        // Добавляем пустые модули для теста
+        
+        // Теперь компилятор найдет этот класс, так как мы его импортировали выше
+        modules.add(new ArmorHUD());
+        
+        // Если хочешь добавить пустые модули для теста без создания файлов:
         modules.add(new Module("Zoom", Category.VISUAL) {});
         modules.add(new Module("FastExp", Category.COMBAT) {});
-        modules.add(new Module("ArmorHUD", Category.HUD) {});
     }
 
     public static List<Module> getModules() {
