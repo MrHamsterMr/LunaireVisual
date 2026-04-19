@@ -16,7 +16,7 @@ public class MixinInGameHud {
     @Inject(method = "render", at = @At("HEAD"))
     private void onRenderLunaire(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         for (LunaireModule m : ModuleManager.getModules()) {
-            if (m != null && m.isEnabled()) {
+            if (m.isEnabled()) {
                 m.onRenderHud(context);
             }
         }
@@ -26,7 +26,6 @@ public class MixinInGameHud {
     private void onRenderFire(DrawContext context, CallbackInfo ci) {
         LunaireModule m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
-            // Проверяем настройку NoFire внутри модуля
             var s = m.getSetting("NoFire");
             if (s != null && s.bVal) ci.cancel();
         }
