@@ -14,28 +14,23 @@ public class ClickGuiScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, width, height, 0x50000000); // Мягкое затемнение
-
+        context.fill(0, 0, width, height, 0x60000000); // Размытие фона
         int x = 40;
         for (Category cat : Category.values()) {
             int y = 40;
-            // Стильная шапка категории
-            context.fill(x - 2, y - 2, x + 92, y + 15, 0xFF00FBFF);
-            context.drawCenteredTextWithShadow(textRenderer, cat.name(), x + 45, y + 3, 0xFF000000);
-            y += 20;
-
+            context.fill(x, y, x + 90, y + 14, 0xFF00FBFF);
+            context.drawText(textRenderer, cat.name(), x + 5, y + 3, 0xFF000000, false);
+            y += 18;
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    boolean hovered = mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14;
-                    int bgColor = m.isEnabled() ? 0xBF00FBFF : (hovered ? 0x90303030 : 0x90151515);
+                    int bgColor = m.isEnabled() ? 0x9000FBFF : 0x90202020;
                     if (m.binding) bgColor = 0xFFFFAA00;
-
                     context.fill(x, y, x + 90, y + 14, bgColor);
-                    context.drawText(textRenderer, m.getName(), x + 5, y + 3, m.isEnabled() ? 0xFF000000 : -1, false);
+                    context.drawText(textRenderer, m.getName(), x + 5, y + 3, -1, false);
                     y += 16;
                 }
             }
-            x += 105;
+            x += 100;
         }
     }
 
@@ -43,14 +38,13 @@ public class ClickGuiScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int x = 40;
         for (Category cat : Category.values()) {
-            int y = 60;
+            int y = 58;
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
                     if (mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14) {
                         if (m.binding) {
-                            m.setKey(button, true); // Бинд на кнопку мыши!
+                            m.setKey(button, true);
                             m.binding = false;
-                            Config.save();
                         } else {
                             if (button == 0) m.toggle();
                             if (button == 1) m.binding = true;
@@ -60,7 +54,7 @@ public class ClickGuiScreen extends Screen {
                     y += 16;
                 }
             }
-            x += 105;
+            x += 100;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -69,7 +63,8 @@ public class ClickGuiScreen extends Screen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         for (Module m : ModuleManager.getModules()) {
             if (m.binding) {
-                m.setKey(keyCode, false);
+                if (keyCode == GLFW.GLFW_KEY_ESCAPE) m.setKey(0, false);
+                else m.setKey(keyCode, false);
                 m.binding = false;
                 Config.save();
                 return true;
