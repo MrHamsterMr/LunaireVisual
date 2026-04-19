@@ -9,9 +9,7 @@ public abstract class Module {
     private Category category;
     private boolean enabled = false;
     private int key;
-    
-    // ВАЖНО: Этого поля не хватало для ClickGUI
-    public boolean binding = false; 
+    public boolean binding = false;
 
     public Module(String name, Category category, int key) {
         this.name = name;
@@ -22,13 +20,11 @@ public abstract class Module {
     public void toggle() {
         this.enabled = !this.enabled;
         if (enabled) onEnable(); else onDisable();
+        Config.save(); // Сохраняем конфиг при каждом клике
     }
 
     public void onEnable() {}
-    
-    // ВАЖНО: Этого метода не хватало для FullBright
-    public void onDisable() {} 
-
+    public void onDisable() {}
     public void onTick() {}
     public void onRenderHud(DrawContext context) {}
 
@@ -36,5 +32,5 @@ public abstract class Module {
     public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
     public int getKey() { return key; }
-    public void setKey(int key) { this.key = key; }
+    public void setKey(int key) { this.key = key; Config.save(); }
 }
