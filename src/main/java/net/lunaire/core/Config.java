@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Config {
-    // Получаем путь к папке игры через MinecraftClient
     private static final File file = new File(MinecraftClient.getInstance().runDirectory, "lunaire_config.txt");
 
     public static void save() {
@@ -14,7 +13,7 @@ public class Config {
             for (Module m : ModuleManager.getModules()) {
                 out.println(m.getName() + ":" + m.isEnabled() + ":" + m.getKey());
             }
-        } catch (IOException ignored) {}
+        } catch (Exception ignored) {}
     }
 
     public static void load() {
@@ -22,16 +21,11 @@ public class Config {
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if (line.isEmpty()) continue;
                 String[] parts = line.split(":");
                 if (parts.length < 3) continue;
-                
                 Module m = ModuleManager.getModule(parts[0]);
                 if (m != null) {
-                    boolean shouldBeEnabled = Boolean.parseBoolean(parts[1]);
-                    if (shouldBeEnabled != m.isEnabled()) {
-                        m.toggle();
-                    }
+                    if (Boolean.parseBoolean(parts[1]) != m.isEnabled()) m.toggle();
                     m.setKey(Integer.parseInt(parts[2]));
                 }
             }
