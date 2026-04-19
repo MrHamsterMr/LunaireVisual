@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "net.lunaire.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [ "IMinecraftClient" ],
+  "injectors": { "defaultRequire": 1 }
+}
