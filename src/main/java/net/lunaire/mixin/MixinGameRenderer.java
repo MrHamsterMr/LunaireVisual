@@ -15,7 +15,6 @@ public class MixinGameRenderer {
     private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> info) {
         Module m = ModuleManager.getModule("Zoom");
         if (m != null && m.isEnabled()) {
-            // В твоей версии 1.21.4 FOV работает через Float
             float fov = info.getReturnValue();
             info.setReturnValue(fov / 4.0f);
         }
