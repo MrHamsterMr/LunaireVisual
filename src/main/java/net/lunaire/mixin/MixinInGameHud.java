@@ -13,19 +13,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
 
-    // 1.21.4 требует RenderTickCounter (tickCounter)
     @Inject(method = "render", at = @At("HEAD"))
     private void onRenderLunaire(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         for (Module m : ModuleManager.getModules()) {
-            if (m != null && m.isEnabled()) {
+            if (m.isEnabled()) {
                 m.onRenderHud(context);
             }
         }
     }
 
-    // Убираем огонь (используем более точный дескриптор для 1.21.4)
+    // Исправлено под твой лог: добавлен RenderTickCounter
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderFire(DrawContext context, CallbackInfo ci) {
+    private void onRenderFire(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
             ci.cancel();
