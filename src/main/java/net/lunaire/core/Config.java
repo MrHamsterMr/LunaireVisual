@@ -2,38 +2,30 @@ package net.lunaire.core;
 
 import net.lunaire.features.ModuleManager;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Config {
-    private static final File CONFIG_FILE = new File("lunaire_config.txt");
+    private static final File file = new File(MinecraftClient.getInstance().runDirectory, "lunaire_config.txt");
 
     public static void save() {
-        try {
-            List<String> lines = new ArrayList<>();
+        try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
             for (Module m : ModuleManager.getModules()) {
-                lines.add(m.getName() + ":" + m.isEnabled() + ":" + m.getKey());
+                out.println(m.getName() + ":" + m.isEnabled() + ":" + m.getKey());
             }
-            PrintWriter writer = new PrintWriter(new FileWriter(CONFIG_FILE));
-            for (String line : lines) writer.println(line);
-            writer.close();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (IOException ignored) {}
     }
 
     public static void load() {
-        if (!CONFIG_FILE.exists()) return;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(CONFIG_FILE));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":");
+        if (!file.exists()) return;
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String[] parts = scanner.nextLine().split(":");
                 Module m = ModuleManager.getModule(parts[0]);
                 if (m != null) {
-                    if (Boolean.parseBoolean(parts[1])) m.toggle();
+                    if (Boolean.parseBoolean(parts[1]) != m.isEnabled()) m.toggle();
                     m.setKey(Integer.parseInt(parts[2]));
                 }
             }
-            reader.close();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception ignored) {}
     }
 }
