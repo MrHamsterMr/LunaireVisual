@@ -1,12 +1,13 @@
 package net.lunaire.core;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 
 public abstract class Module {
     protected static final MinecraftClient mc = MinecraftClient.getInstance();
     private String name;
     private Category category;
-    private boolean enabled = false;
+    private boolean enabled = true; // Сделаем включенным по умолчанию для теста
 
     public Module(String name, Category category) {
         this.name = name;
@@ -19,4 +20,5 @@ public abstract class Module {
     public void toggle() { this.enabled = !this.enabled; }
 
     public void onTick() {}
+    public void onRenderHud(DrawContext context) {} // Этот метод должен быть здесь!
 }
