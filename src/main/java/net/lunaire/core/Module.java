@@ -20,7 +20,7 @@ public abstract class Module {
     public void toggle() {
         this.enabled = !this.enabled;
         if (enabled) onEnable(); else onDisable();
-        Config.save(); // Сохраняем конфиг при каждом клике
+        Config.save();
     }
 
     public void onEnable() {}
@@ -32,5 +32,5 @@ public abstract class Module {
     public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
     public int getKey() { return key; }
-    public void setKey(int key) { this.key = key; Config.save(); }
+    public void setKey(int key) { this.key = key; }
 }
