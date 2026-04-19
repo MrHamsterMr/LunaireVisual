@@ -3,55 +3,63 @@ package net.lunaire.ui;
 import net.lunaire.core.Category;
 import net.lunaire.core.Module;
 import net.lunaire.features.ModuleManager;
+import net.lunaire.core.Config;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class ClickGuiScreen extends Screen {
-    public ClickGuiScreen() { super(Text.of("Lunaire GUI")); }
+    public ClickGuiScreen() { super(Text.of("Lunaire Menu")); }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, width, height, 0x70000000);
-        int x = 30;
+        context.fill(0, 0, width, height, 0x60000000); // Затемнение фона
+
+        int x = 40;
         for (Category cat : Category.values()) {
-            int y = 30;
-            // Рамка категории
-            context.fill(x, y, x + 100, y + 15, 0xFF00FBFF);
-            context.drawCenteredTextWithShadow(textRenderer, cat.name(), x + 50, y + 4, -1);
+            int y = 40;
+            // Заголовок категории (Стильный голубой Lunaire)
+            context.fill(x, y, x + 90, y + 14, 0xFF00FBFF);
+            context.drawText(textRenderer, cat.name(), x + 5, y + 3, 0xFF000000, false);
             y += 18;
 
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    int color = m.isEnabled() ? 0xFF00FBFF : 0xFFFFFFFF;
-                    if (m.binding) color = 0xFFFFAA00;
-                    
-                    context.fill(x, y, x + 100, y + 14, 0x90101010);
-                    context.drawText(textRenderer, m.getName(), x + 4, y + 3, color, false);
+                    // Цвет кнопки: голубой если включен, темно-серый если выключен
+                    int bgColor = m.isEnabled() ? 0x9000FBFF : 0x90202020;
+                    if (m.binding) bgColor = 0xFFFFAA00; // Желтый при бинде
+
+                    context.fill(x, y, x + 90, y + 14, bgColor);
+                    context.drawText(textRenderer, m.getName(), x + 5, y + 3, -1, false);
                     y += 16;
                 }
             }
-            x += 110;
+            x += 100;
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int x = 30;
+        int x = 40;
         for (Category cat : Category.values()) {
-            int y = 48; // С учетом шапки
+            int y = 58; // Начало списка под заголовком
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    if (mouseX >= x && mouseX <= x + 100 && mouseY >= y && mouseY <= y + 14) {
-                        if (button == 0) m.toggle();
-                        if (button == 1) m.binding = !m.binding;
+                    if (mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14) {
+                        if (button == 0) { // ЛКМ - включить
+                            m.toggle();
+                            Config.save(); // Сохраняем результат
+                        }
+                        if (button == 1) { // ПКМ - бинд
+                            m.binding = !m.binding;
+                        }
                         return true;
                     }
                     y += 16;
                 }
             }
-            x += 110;
+            x += 100;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -63,10 +71,14 @@ public class ClickGuiScreen extends Screen {
                 if (keyCode == GLFW.GLFW_KEY_ESCAPE) m.setKey(0);
                 else m.setKey(keyCode);
                 m.binding = false;
+                Config.save();
                 return true;
             }
         }
-        if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) { this.close(); return true; }
+        if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT || keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            this.close();
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
