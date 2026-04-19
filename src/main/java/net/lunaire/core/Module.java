@@ -1,7 +1,6 @@
 package net.lunaire.core;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 
 public abstract class Module {
     protected static final MinecraftClient mc = MinecraftClient.getInstance();
@@ -20,5 +19,4 @@ public abstract class Module {
     public void toggle() { this.enabled = !this.enabled; }
 
     public void onTick() {}
-    public void onRenderHud(DrawContext context) {}
 }
