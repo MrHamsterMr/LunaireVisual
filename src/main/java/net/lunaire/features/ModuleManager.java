@@ -10,13 +10,25 @@ public class ModuleManager {
 
     public static void init() {
         modules.clear();
-        // Добавляем пустые модули для теста
-        modules.add(new Module("Zoom", Category.VISUAL) {});
-        modules.add(new Module("FastExp", Category.COMBAT) {});
-        modules.add(new Module("ArmorHUD", Category.HUD) {});
+        // Добавляем заглушки с ТРЕМЯ аргументами (имя, категория, кнопка)
+        modules.add(new Module("Zoom", Category.VISUAL, 0) {});
+        modules.add(new Module("FastExp", Category.COMBAT, 0) {});
+        modules.add(new Module("ArmorHUD", Category.HUD, 0) {});
+        modules.add(new Module("NoRender", Category.VISUAL, 0) {});
+        modules.add(new Module("TotemPop", Category.COMBAT, 0) {});
     }
 
     public static List<Module> getModules() {
         return modules;
+    }
+
+    // Метод, который искал компилятор
+    public static Module getModule(String name) {
+        for (Module m : modules) {
+            if (m.getName().equalsIgnoreCase(name)) {
+                return m;
+            }
+        }
+        return null;
     }
 }
