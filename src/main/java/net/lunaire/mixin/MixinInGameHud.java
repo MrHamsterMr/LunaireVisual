@@ -12,9 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
 
-    // В 1.21.4 обязательно указывать DrawContext context
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderFire(DrawContext context, CallbackInfo ci) {
+    private void onRenderFireOverlay(DrawContext context, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
             ci.cancel();
