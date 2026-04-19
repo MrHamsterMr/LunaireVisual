@@ -16,17 +16,13 @@ public abstract class MixinCamera {
     @Shadow private float yaw;
     @Shadow private float pitch;
 
-    private float freeYaw, freePitch;
-
     @Inject(method = "update", at = @At("RETURN"))
     private void onUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         Module freeLook = ModuleManager.getModule("FreeLook");
         if (freeLook != null && freeLook.isEnabled()) {
-            // Камера застывает или вращается отдельно (базовая логика)
-            this.setRotation(this.yaw, this.pitch); 
+            this.setRotation(this.yaw, this.pitch);
         }
     }
 
-    @Shadow
-    protected abstract void setRotation(float yaw, float pitch);
+    @Shadow protected abstract void setRotation(float yaw, float pitch);
 }
