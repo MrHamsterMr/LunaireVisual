@@ -12,22 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-
     @Inject(method = "render", at = @At("HEAD"))
-    private void onRenderLunaire(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+    private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         for (LunaireModule m : ModuleManager.getModules()) {
-            if (m.isEnabled()) {
-                m.onRenderHud(context);
-            }
-        }
-    }
-
-    @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderFire(DrawContext context, CallbackInfo ci) {
-        LunaireModule m = ModuleManager.getModule("NoRender");
-        if (m != null && m.isEnabled()) {
-            var s = m.getSetting("NoFire");
-            if (s != null && s.bVal) ci.cancel();
+            if (m.isEnabled()) m.onRenderHud(context);
         }
     }
 }
