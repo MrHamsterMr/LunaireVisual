@@ -3,7 +3,7 @@ package net.lunaire.core;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.lunaire.features.ModuleManager;
+import net.lunaire.features.ModuleManager; // ИСПРАВЛЕНО
 import net.lunaire.ui.ClickGuiScreen;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
