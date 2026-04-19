@@ -4,9 +4,8 @@ import net.lunaire.core.Category;
 import net.lunaire.core.Module;
 import net.lunaire.mixin.IMinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class ModuleManager {
     public static void init() {
         modules.clear();
 
-        // COMBAT
+        // --- COMBAT ---
         modules.add(new Module("FastExp", Category.COMBAT, 0) {
             @Override public void onTick() {
                 if (mc.options.useKey.isPressed() && mc.player.getMainHandStack().isOf(Items.EXPERIENCE_BOTTLE)) {
@@ -25,40 +24,37 @@ public class ModuleManager {
                 }
             }
         });
+        modules.add(new Module("FastSwap", Category.COMBAT, 0) {});
         modules.add(new Module("TotemPop", Category.COMBAT, 0) {});
+        modules.add(new Module("HitColor", Category.COMBAT, 0) {});
 
-        // VISUAL
+        // --- VISUAL ---
         modules.add(new Module("Zoom", Category.VISUAL, GLFW.GLFW_KEY_C) {});
         modules.add(new Module("FullBright", Category.VISUAL, 0) {
             @Override public void onTick() { mc.options.getGamma().setValue(100.0); }
             @Override public void onDisable() { mc.options.getGamma().setValue(1.0); }
         });
         modules.add(new Module("NoRender", Category.VISUAL, 0) {});
-        
-        // №13 TargetHUD
-        modules.add(new Module("TargetHUD", Category.VISUAL, 0) {
-            @Override public void onRenderHud(DrawContext context) {
-                if (mc.targetedEntity instanceof LivingEntity target) {
-                    context.fill(10, 10, 130, 45, 0x90000000);
-                    context.drawText(mc.textRenderer, target.getName().getString(), 15, 15, -1, true);
-                    context.drawText(mc.textRenderer, (int)target.getHealth() + " HP", 15, 25, 0xFF00FBFF, true);
-                }
-            }
-        });
+        modules.add(new Module("TargetHUD", Category.VISUAL, 0) {});
+        modules.add(new Module("BlockOverlay", Category.VISUAL, 0) {});
+        modules.add(new Module("Crosshair", Category.VISUAL, 0) {});
+        modules.add(new Module("CustomHand", Category.VISUAL, 0) {});
+        modules.add(new Module("ShulkerView", Category.VISUAL, 0) {});
+        modules.add(new Module("ItemGlow", Category.VISUAL, 0) {});
+        modules.add(new Module("HitboxColor", Category.VISUAL, 0) {});
 
-        // HUD
-        modules.add(new Module("ArmorHUD", Category.HUD, 0) {
-            @Override public void onRenderHud(DrawContext context) {
-                int y = context.getScaledWindowHeight() - 100;
-                for (int i = 3; i >= 0; i--) {
-                    ItemStack stack = mc.player.getInventory().getArmorStack(i);
-                    if (!stack.isEmpty()) {
-                        context.drawItem(stack, 10, y);
-                        y += 20;
-                    }
-                }
-            }
-        });
+        // --- MISC ---
+        modules.add(new Module("FreeLook", Category.MISC, 0) {});
+        modules.add(new Module("ItemScroller", Category.MISC, 0) {});
+        modules.add(new Module("Waypoints", Category.MISC, 0) {});
+        modules.add(new Module("Friends", Category.MISC, 0) {});
+        modules.add(new Module("Optimization", Category.MISC, 0) {});
+        modules.add(new Module("ChunkOpt", Category.MISC, 0) {});
+        modules.add(new Module("Macros", Category.MISC, 0) {});
+
+        // --- HUD ---
+        modules.add(new Module("ArmorHUD", Category.HUD, 0) {});
+        modules.add(new Module("InfoHUD", Category.HUD, 0) {});
     }
 
     public static List<Module> getModules() { return modules; }
