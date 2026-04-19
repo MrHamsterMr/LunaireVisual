@@ -2,13 +2,10 @@ package net.lunaire.core;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.lunaire.features.ModuleManager;
 import net.lunaire.ui.ClickGuiScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,25 +18,6 @@ public class LunaireClient implements ClientModInitializer {
         ModuleManager.init();
         Config.load();
 
-        // Команда .bind
-        ClientSendMessageEvents.ALLOW_CHAT.register(message -> {
-            if (message.startsWith(".bind")) {
-                String[] args = message.split(" ");
-                if (args.length >= 3) {
-                    Module m = ModuleManager.getModule(args[1]);
-                    if (m != null) {
-                        m.setKey(args[2].toUpperCase().charAt(0));
-                        Config.save();
-                        if (MinecraftClient.getInstance().player != null) {
-                            MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §fКлавиша сохранена!"), false);
-                        }
-                    }
-                }
-                return false;
-            }
-            return true;
-        });
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
             long win = client.getWindow().getHandle();
@@ -49,20 +27,14 @@ public class LunaireClient implements ClientModInitializer {
             }
 
             for (Module m : ModuleManager.getModules()) {
-                if (m.getKey() != 0) {
-                    boolean down = InputUtil.isKeyPressed(win, m.getKey());
-                    if (down && !PRESSED.contains(m.getKey())) {
+                if (m.key != 0) {
+                    boolean down = InputUtil.isKeyPressed(win, m.key);
+                    if (down && !PRESSED.contains(m.key)) {
                         m.toggle();
-                        PRESSED.add(m.getKey());
-                    } else if (!down) PRESSED.remove(Integer.valueOf(m.getKey()));
+                        PRESSED.add(m.key);
+                    } else if (!down) PRESSED.remove(Integer.valueOf(m.key));
                 }
                 if (m.isEnabled()) m.onTick();
-            }
-        });
-
-        HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            for (Module m : ModuleManager.getModules()) {
-                if (m.isEnabled()) m.onRenderHud(context);
             }
         });
     }
