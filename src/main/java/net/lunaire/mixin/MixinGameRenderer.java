@@ -1,6 +1,7 @@
 package net.lunaire.mixin;
 
-import net.lunaire.core.*;
+import net.lunaire.core.LunaireModule;
+import net.lunaire.core.Setting;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
@@ -14,20 +15,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
 
-    @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
+    // Фикс Зума через системное имя метода getFov
+    @Inject(method = "method_3196", at = @At("RETURN"), cancellable = true)
     private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> info) {
         LunaireModule m = ModuleManager.getModule("Zoom");
         if (m != null && m.isEnabled()) {
-            info.setReturnValue(info.getReturnValue() / 4.0f);
+            float fov = info.getReturnValue();
+            info.setReturnValue(fov / 4.0f);
         }
     }
 
-    @Inject(method = "bobViewWhenHurt", at = @At("HEAD"), cancellable = true)
+    // Фикс Тряски (NoShake) через системное имя метода bobViewWhenHurt
+    @Inject(method = "method_3190", at = @At("HEAD"), cancellable = true)
     private void onHurtTilt(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         LunaireModule m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
             Setting s = m.getSetting("NoShake");
-            if (s != null && s.bVal) ci.cancel();
+            if (s != null && s.bVal) {
+                ci.cancel();
+            }
         }
     }
 }
