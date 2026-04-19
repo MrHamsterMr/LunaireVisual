@@ -7,18 +7,30 @@ public abstract class Module {
     protected static final MinecraftClient mc = MinecraftClient.getInstance();
     private String name;
     private Category category;
-    private boolean enabled = true; // Сделаем включенным по умолчанию для теста
+    private boolean enabled = false;
+    private int key; // Код клавиши
+    public boolean binding = false; // Режим прослушивания новой клавиши
 
-    public Module(String name, Category category) {
+    public Module(String name, Category category, int defaultKey) {
         this.name = name;
         this.category = category;
+        this.key = defaultKey;
     }
 
+    public void toggle() {
+        this.enabled = !this.enabled;
+        if (enabled) onEnable(); else onDisable();
+    }
+
+    public void onEnable() {}
+    public void onDisable() {}
+    public void onTick() {}
+    public void onRenderHud(DrawContext context) {}
+
+    // Геттеры и сеттеры
     public String getName() { return name; }
     public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
-    public void toggle() { this.enabled = !this.enabled; }
-
-    public void onTick() {}
-    public void onRenderHud(DrawContext context) {} // Этот метод должен быть здесь!
+    public int getKey() { return key; }
+    public void setKey(int key) { this.key = key; }
 }
