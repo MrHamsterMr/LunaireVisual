@@ -5,7 +5,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Module {
+public abstract class LunaireModule {
     protected static final MinecraftClient mc = MinecraftClient.getInstance();
     public String name;
     public Category category;
@@ -13,10 +13,10 @@ public abstract class Module {
     public int key;
     public boolean isMouse = false;
     public boolean binding = false;
-    public boolean showSettings = false; // Открыты ли настройки модуля
+    public boolean showSettings = false;
     public List<Setting> settings = new ArrayList<>();
 
-    public Module(String name, Category category, int key) {
+    public LunaireModule(String name, Category category, int key) {
         this.name = name;
         this.category = category;
         this.key = key;
@@ -38,8 +38,8 @@ public abstract class Module {
     public void onTick() {}
     public void onRenderHud(DrawContext context) {}
 
-    public Category getCategory() { return category; }
     public String getName() { return name; }
+    public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
     public void setKey(int key, boolean mouse) { this.key = key; this.isMouse = mouse; }
 }
