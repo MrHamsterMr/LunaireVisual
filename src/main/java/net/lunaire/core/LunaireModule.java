@@ -24,7 +24,8 @@ public abstract class LunaireModule {
 
     public void addSetting(Setting s) { settings.add(s); }
     public Setting getSetting(String name) {
-        return settings.stream().filter(s -> s.name.equalsIgnoreCase(name)).findFirst().orElse(null);
+        for (Setting s : settings) if (s.name.equalsIgnoreCase(name)) return s;
+        return null;
     }
 
     public void toggle() {
