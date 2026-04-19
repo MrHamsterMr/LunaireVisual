@@ -42,4 +42,10 @@ public abstract class LunaireModule {
     public boolean isEnabled() { return enabled; }
     public String getName() { return name; }
     public Category getCategory() { return category; }
+    
+    // Исправленный метод установки клавиши
+    public void setKey(int key, boolean mouse) { 
+        this.key = key; 
+        this.isMouse = mouse; 
+    }
 }
