@@ -5,10 +5,10 @@ import net.minecraft.client.gui.DrawContext;
 
 public abstract class Module {
     protected static final MinecraftClient mc = MinecraftClient.getInstance();
-    private String name;
-    private Category category;
-    private boolean enabled = false;
-    private int key;
+    public String name;
+    public Category category;
+    public boolean enabled = false;
+    public int key;
     public boolean binding = false;
 
     public Module(String name, Category category, int key) {
