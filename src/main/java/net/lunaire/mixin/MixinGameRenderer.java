@@ -11,15 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
-    private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> info) {
-        for (Module m : ModuleManager.getModules()) {
-            if (m.getName().equalsIgnoreCase("Zoom") && m.isEnabled()) {
-                float originalFov = info.getReturnValue();
-                info.setReturnValue(originalFov / 4.0f);
-                break;
-            }
+    private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> info) {
+        Module m = ModuleManager.getModule("Zoom");
+        if (m != null && m.isEnabled()) {
+            info.setReturnValue(info.getReturnValue() / 4.0);
         }
     }
 }
