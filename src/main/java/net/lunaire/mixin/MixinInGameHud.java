@@ -1,6 +1,6 @@
 package net.lunaire.mixin;
 
-import net.lunaire.core.Module;
+import net.lunaire.core.LunaireModule;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -12,12 +12,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
+
     @Inject(method = "render", at = @At("HEAD"))
     private void onRenderLunaire(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        for (Module m : ModuleManager.getModules()) {
-            if (m.isEnabled()) {
+        for (LunaireModule m : ModuleManager.getModules()) {
+            if (m != null && m.isEnabled()) {
                 m.onRenderHud(context);
             }
+        }
+    }
+
+    @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
+    private void onRenderFire(DrawContext context, CallbackInfo ci) {
+        LunaireModule m = ModuleManager.getModule("NoRender");
+        if (m != null && m.isEnabled()) {
+            // Проверяем настройку NoFire внутри модуля
+            var s = m.getSetting("NoFire");
+            if (s != null && s.bVal) ci.cancel();
         }
     }
 }
