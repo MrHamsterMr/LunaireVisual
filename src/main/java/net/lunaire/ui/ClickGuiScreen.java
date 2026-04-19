@@ -12,12 +12,12 @@ public class ClickGuiScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, width, height, 0x70000000);
-        int x = 30;
+        context.fill(0, 0, width, height, 0x60000000);
+        int x = 40;
         for (Category cat : Category.values()) {
-            int y = 30;
-            context.fill(x, y, x + 110, y + 15, 0xFF00FBFF);
-            context.drawText(textRenderer, cat.name(), x + 5, y + 4, 0x0, false);
+            int y = 40;
+            context.fill(x, y, x + 110, y + 14, 0xFF00FBFF);
+            context.drawText(textRenderer, cat.name(), x + 5, y + 3, 0x0, false);
             y += 18;
 
             for (LunaireModule m : ModuleManager.getModules()) {
@@ -25,7 +25,7 @@ public class ClickGuiScreen extends Screen {
                     int bgColor = m.isEnabled() ? 0xBF00FBFF : 0x90151515;
                     if (m.binding) bgColor = 0xFFFFAA00;
                     context.fill(x, y, x + 90, y + 14, bgColor);
-                    context.drawText(textRenderer, m.getName(), x + 4, y + 3, -1, false);
+                    context.drawText(textRenderer, m.name, x + 5, y + 3, -1, false);
 
                     context.fill(x + 92, y, x + 110, y + 14, 0x90303030);
                     context.drawText(textRenderer, ">", x + 98, y + 3, -1, false);
@@ -50,13 +50,14 @@ public class ClickGuiScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int x = 30;
+        int x = 40;
         for (Category cat : Category.values()) {
-            int y = 48;
+            int y = 58;
             for (LunaireModule m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
                     if (mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14) {
-                        if (button == 0) m.toggle();
+                        if (m.binding) { m.setKey(button, true); m.binding = false; }
+                        else { if (button == 0) m.toggle(); if (button == 1) m.binding = true; }
                         return true;
                     }
                     if (mouseX >= x + 92 && mouseX <= x + 110 && mouseY >= y && mouseY <= y + 14) {
@@ -66,8 +67,17 @@ public class ClickGuiScreen extends Screen {
                     y += 16;
                 }
             }
-            x += 130;
+            x += 100;
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        for (LunaireModule m : ModuleManager.getModules()) {
+            if (m.binding) { m.setKey(keyCode, false); m.binding = false; Config.save(); return true; }
+        }
+        if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) { this.close(); return true; }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
