@@ -12,11 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
+
+    // Исправлено под 1.21.4: вместо float теперь RenderTickCounter (tickCounter)
     @Inject(method = "render", at = @At("HEAD"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        // Метод для связи
+        // Метод для связи с HUD Lunaire
     }
 
+    // В 1.21.4 этот метод принимает только DrawContext
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
     private void onRenderFire(DrawContext context, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
