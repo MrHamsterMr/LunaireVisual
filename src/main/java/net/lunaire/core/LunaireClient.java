@@ -2,12 +2,10 @@ package net.lunaire.core;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.lunaire.features.ModuleManager;
 import net.lunaire.ui.ClickGuiScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +32,7 @@ public class LunaireClient implements ClientModInitializer {
                     if (down && !PRESSED.contains(m.key)) {
                         m.toggle();
                         PRESSED.add(m.key);
-                    } else if (!down) {
-                        PRESSED.remove(Integer.valueOf(m.key));
-                    }
+                    } else if (!down) PRESSED.remove(Integer.valueOf(m.key));
                 }
                 if (m.isEnabled()) m.onTick();
             }
