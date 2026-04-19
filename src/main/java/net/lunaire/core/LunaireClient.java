@@ -21,6 +21,7 @@ public class LunaireClient implements ClientModInitializer {
         ModuleManager.init();
         Config.load();
 
+        // Команда .bind
         ClientSendMessageEvents.ALLOW_CHAT.register(message -> {
             if (message.startsWith(".bind")) {
                 String[] args = message.split(" ");
@@ -29,7 +30,9 @@ public class LunaireClient implements ClientModInitializer {
                     if (m != null) {
                         m.setKey(args[2].toUpperCase().charAt(0));
                         Config.save();
-                        MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §fКлавиша сохранена!"), false);
+                        if (MinecraftClient.getInstance().player != null) {
+                            MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §fКлавиша сохранена!"), false);
+                        }
                     }
                 }
                 return false;
