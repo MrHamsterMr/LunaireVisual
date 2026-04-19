@@ -1,7 +1,6 @@
 package net.lunaire.mixin;
 
-import net.lunaire.core.LunaireModule;
-import net.lunaire.core.Setting;
+import net.lunaire.core.*;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
@@ -14,16 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
     private void onGetFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> info) {
         LunaireModule m = ModuleManager.getModule("Zoom");
-        if (m != null && m.isEnabled()) {
-            info.setReturnValue(info.getReturnValue() / 4.0f);
-        }
+        if (m != null && m.isEnabled()) info.setReturnValue(info.getReturnValue() / 4.0f);
     }
 
-    // Исправленный метод для 1.21.4 (NoShake)
     @Inject(method = "bobViewWhenHurt", at = @At("HEAD"), cancellable = true)
     private void onHurtTilt(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         LunaireModule m = ModuleManager.getModule("NoRender");
