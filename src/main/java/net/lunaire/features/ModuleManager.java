@@ -4,6 +4,7 @@ import net.lunaire.core.Category;
 import net.lunaire.core.Module;
 import net.lunaire.mixin.IMinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
@@ -37,8 +38,8 @@ public class ModuleManager {
         modules.add(new Module("NoRender", Category.VISUAL, 0) {});
         modules.add(new Module("TargetHUD", Category.VISUAL, 0) {
             @Override public void onRenderHud(DrawContext context) {
-                if (mc.targetedEntity instanceof net.minecraft.entity.LivingEntity target) {
-                    context.fill(10, 10, 120, 40, 0x90000000);
+                if (mc.targetedEntity instanceof LivingEntity target) {
+                    context.fill(10, 10, 130, 45, 0x90000000);
                     context.drawText(mc.textRenderer, target.getName().getString(), 15, 15, -1, true);
                     context.drawText(mc.textRenderer, (int)target.getHealth() + " HP", 15, 25, 0xFF00FBFF, true);
                 }
@@ -54,3 +55,26 @@ public class ModuleManager {
                     if (!stack.isEmpty()) {
                         context.drawItem(stack, 10, y);
                         y += 20;
+                    }
+                }
+            }
+        });
+
+        // --- MISC ---
+        String[] miscModules = {"Waypoints", "Friends", "ItemScroller", "Optimization", "FreeLook", "BlockOverlay", "Crosshair", "CustomHand", "Macros", "ShulkerView", "HitboxColor"};
+        for(String name : miscModules) {
+            modules.add(new Module(name, Category.MISC, 0) {});
+        }
+    }
+
+    public static List<Module> getModules() { 
+        return modules; 
+    }
+
+    public static Module getModule(String name) {
+        for (Module m : modules) {
+            if (m.getName().equalsIgnoreCase(name)) return m;
+        }
+        return null;
+    }
+}
