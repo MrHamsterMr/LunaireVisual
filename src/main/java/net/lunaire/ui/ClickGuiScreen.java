@@ -1,12 +1,14 @@
 package net.lunaire.ui;
+
 import net.lunaire.core.*;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class ClickGuiScreen extends Screen {
-    public ClickGuiScreen() { super(net.minecraft.text.Text.of("Lunaire GUI")); }
+    public ClickGuiScreen() { super(Text.of("Lunaire GUI")); }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -17,14 +19,16 @@ public class ClickGuiScreen extends Screen {
             context.fill(x, y, x + 110, y + 14, 0xFF00FBFF);
             context.drawText(textRenderer, cat.name(), x + 5, y + 3, 0, false);
             y += 18;
+
             for (LunaireModule m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    int color = m.isEnabled() ? 0xBF00FBFF : 0x90151515;
-                    if (m.binding) color = 0xFFFFAA00;
-                    context.fill(x, y, x + 90, y + 14, color);
+                    int bgColor = m.isEnabled() ? 0xBF00FBFF : 0x90151515;
+                    if (m.binding) bgColor = 0xFFFFAA00;
+                    context.fill(x, y, x + 90, y + 14, bgColor);
                     context.drawText(textRenderer, m.name, x + 5, y + 3, -1, false);
                     context.fill(x + 92, y, x + 110, y + 14, 0x90303030);
                     context.drawText(textRenderer, ">", x + 98, y + 3, -1, false);
+
                     if (m.showSettings) {
                         int sy = y;
                         context.fill(x + 115, sy, x + 215, sy + (m.settings.size() * 15) + 5, 0xDF101010);
@@ -70,12 +74,5 @@ public class ClickGuiScreen extends Screen {
             x += 135;
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        for (LunaireModule m : ModuleManager.getModules()) if (m.binding) { m.setKey(keyCode, false); m.binding = false; Config.save(); return true; }
-        if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) { this.close(); return true; }
-        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
