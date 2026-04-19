@@ -23,30 +23,24 @@ public class LunaireClient implements ClientModInitializer {
             if (client.player == null) return;
             long win = client.getWindow().getHandle();
 
-            // Открытие меню на Правый Шифт
             if (InputUtil.isKeyPressed(win, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
                 if (!(client.currentScreen instanceof ClickGuiScreen)) client.setScreen(new ClickGuiScreen());
             }
 
-            for (Module m : ModuleManager.getModules()) {
+            for (LunaireModule m : ModuleManager.getModules()) {
                 if (m.key != 0) {
-                    boolean isDown = m.isMouse ? GLFW.glfwGetMouseButton(win, m.key) == GLFW.GLFW_PRESS : InputUtil.isKeyPressed(win, m.key);
-                    
-                    if (isDown && !PRESSED.contains(m.key)) {
+                    boolean down = m.isMouse ? GLFW.glfwGetMouseButton(win, m.key) == GLFW.GLFW_PRESS : InputUtil.isKeyPressed(win, m.key);
+                    if (down && !PRESSED.contains(m.key)) {
                         m.toggle();
                         PRESSED.add(m.key);
-                    } else if (!isDown) {
-                        PRESSED.remove(Integer.valueOf(m.key));
-                    }
+                    } else if (!down) PRESSED.remove(Integer.valueOf(m.key));
                 }
-                if (m.isEnabled()) m.onTick();
+                if (m.enabled) m.onTick();
             }
         });
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            for (Module m : ModuleManager.getModules()) {
-                if (m.isEnabled()) m.onRenderHud(context);
-            }
+            for (LunaireModule m : ModuleManager.getModules()) if (m.enabled) m.onRenderHud(context);
         });
     }
 }
