@@ -1,15 +1,5 @@
-{
-  "required": true,
-  "package": "net.lunaire.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "IMinecraftClient",
-    "MixinGameRenderer",
-    "MixinInGameHud",
-    "MixinClientPlayNetworkHandler",
-    "MixinCamera"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
-}
+"mixins": [
+  "IMinecraftClient",
+  "MixinGameRenderer",
+  "MixinInGameHud"
+]
