@@ -5,7 +5,10 @@
   "mixins": [
     "IMinecraftClient",
     "MixinGameRenderer",
-    "MixinInGameHud"
+    "MixinInGameHud",
+    "MixinClientPlayNetworkHandler",
+    "MixinCamera",
+    "MixinLivingEntity"
   ],
   "injectors": {
     "defaultRequire": 1
