@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
 
-    // Самый надежный метод в 1.21.4 для отрисовки HUD
     @Inject(method = "render", at = @At("HEAD"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         for (Module m : ModuleManager.getModules()) {
@@ -23,12 +22,11 @@ public class MixinInGameHud {
         }
     }
 
-    // Универсальный способ NoRender (убирает эффекты на экране)
-    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderStatusEffects(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+    @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
+    private void onRenderFire(DrawContext context, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
-            // Если нужно скрыть эффекты зелий
+            ci.cancel();
         }
     }
 }
