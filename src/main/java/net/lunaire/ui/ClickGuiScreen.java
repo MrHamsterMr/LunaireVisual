@@ -1,76 +1,89 @@
 package net.lunaire.ui;
 
-import net.lunaire.core.Category;
-import net.lunaire.core.Module;
+import net.lunaire.core.*;
 import net.lunaire.features.ModuleManager;
-import net.lunaire.core.Config;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 public class ClickGuiScreen extends Screen {
-    public ClickGuiScreen() { super(Text.of("Lunaire GUI")); }
+    public ClickGuiScreen() { super(net.minecraft.text.Text.of("Lunaire GUI")); }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, width, height, 0x60000000); // Размытие фона
-        int x = 40;
+        context.fill(0, 0, width, height, 0x70000000);
+        int x = 30;
         for (Category cat : Category.values()) {
-            int y = 40;
-            context.fill(x, y, x + 90, y + 14, 0xFF00FBFF);
-            context.drawText(textRenderer, cat.name(), x + 5, y + 3, 0xFF000000, false);
+            int y = 30;
+            context.fill(x, y, x + 110, y + 15, 0xFF00FBFF);
+            context.drawText(textRenderer, cat.name(), x + 5, y + 4, 0x0, false);
             y += 18;
+
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
-                    int bgColor = m.isEnabled() ? 0x9000FBFF : 0x90202020;
-                    if (m.binding) bgColor = 0xFFFFAA00;
+                    int bgColor = m.isEnabled() ? 0xBF00FBFF : 0x90151515;
                     context.fill(x, y, x + 90, y + 14, bgColor);
-                    context.drawText(textRenderer, m.getName(), x + 5, y + 3, -1, false);
+                    context.drawText(textRenderer, m.getName(), x + 4, y + 3, -1, false);
+
+                    // Кнопка настроек [>]
+                    context.fill(x + 92, y, x + 110, y + 14, 0x90303030);
+                    context.drawText(textRenderer, ">", x + 98, y + 3, -1, false);
+
+                    // Если настройки открыты, рисуем их сбоку
+                    if (m.showSettings) renderSettings(context, m, mouseX, mouseY, x + 115, y);
+
                     y += 16;
                 }
             }
-            x += 100;
+            x += 130;
+        }
+    }
+
+    private void renderSettings(DrawContext context, Module m, int mx, int my, int x, int y) {
+        context.fill(x, y, x + 100, y + (m.settings.size() * 15) + 5, 0xBF101010);
+        int sy = y + 5;
+        for (Setting s : m.settings) {
+            int color = s.bVal ? 0xFF00FBFF : -1;
+            context.drawText(textRenderer, s.name + (s.type.equals("num") ? ": " + (int)s.dVal : ""), x + 5, sy, color, false);
+            sy += 15;
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int x = 40;
+        int x = 30;
         for (Category cat : Category.values()) {
-            int y = 58;
+            int y = 48;
             for (Module m : ModuleManager.getModules()) {
                 if (m.getCategory() == cat) {
+                    // Клик по модулю
                     if (mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14) {
-                        if (m.binding) {
-                            m.setKey(button, true);
-                            m.binding = false;
-                        } else {
-                            if (button == 0) m.toggle();
-                            if (button == 1) m.binding = true;
-                        }
+                        if (button == 0) m.toggle();
                         return true;
+                    }
+                    // Клик по кнопке настроек [>]
+                    if (mouseX >= x + 92 && mouseX <= x + 110 && mouseY >= y && mouseY <= y + 14) {
+                        m.showSettings = !m.showSettings;
+                        return true;
+                    }
+                    // Клик по самим настройкам
+                    if (m.showSettings && mouseX >= x + 115 && mouseX <= x + 215) {
+                        int sy = y + 5;
+                        for (Setting s : m.settings) {
+                            if (mouseY >= sy && mouseY <= sy + 12) {
+                                if (s.type.equals("bool")) s.bVal = !s.bVal;
+                                if (s.type.equals("num")) s.dVal = (s.dVal >= 9) ? 1 : s.dVal + 1;
+                                Config.save();
+                                return true;
+                            }
+                            sy += 15;
+                        }
                     }
                     y += 16;
                 }
             }
-            x += 100;
+            x += 130;
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        for (Module m : ModuleManager.getModules()) {
-            if (m.binding) {
-                if (keyCode == GLFW.GLFW_KEY_ESCAPE) m.setKey(0, false);
-                else m.setKey(keyCode, false);
-                m.binding = false;
-                Config.save();
-                return true;
-            }
-        }
-        if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) { this.close(); return true; }
-        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
