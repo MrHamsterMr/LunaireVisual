@@ -1,5 +1,4 @@
 package net.lunaire.mixin;
-
 import net.lunaire.core.LunaireModule;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.client.MinecraftClient;
@@ -19,10 +18,9 @@ public class MixinClientPlayNetworkHandler {
     private void onEntityStatus(EntityStatusS2CPacket packet, CallbackInfo ci) {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.world == null || mc.player == null) return;
-
-        if (packet.getStatus() == 35) { // 35 = Totem Pop
+        if (packet.getStatus() == 35) {
             LunaireModule m = ModuleManager.getModule("TotemPop");
-            if (m != null && m.isEnabled()) {
+            if (m != null && m.enabled) {
                 Entity entity = packet.getEntity(mc.world);
                 if (entity instanceof PlayerEntity player) {
                     mc.player.sendMessage(Text.of("§b[Lunaire] §e" + player.getName().getString() + " §fпотерял тотем!"), false);
