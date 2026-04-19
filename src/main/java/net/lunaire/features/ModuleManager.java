@@ -24,9 +24,7 @@ public class ModuleManager {
                 }
             }
         });
-        modules.add(new Module("FastSwap", Category.COMBAT, 0) {});
         modules.add(new Module("TotemPop", Category.COMBAT, 0) {});
-        modules.add(new Module("HitColor", Category.COMBAT, 0) {});
 
         // VISUAL
         modules.add(new Module("Zoom", Category.VISUAL, GLFW.GLFW_KEY_C) {});
@@ -35,6 +33,8 @@ public class ModuleManager {
             @Override public void onTick() { mc.options.getGamma().setValue(100.0); }
             @Override public void onDisable() { mc.options.getGamma().setValue(1.0); }
         });
+        
+        // HUD
         modules.add(new Module("TargetHUD", Category.VISUAL, 0) {
             @Override public void onRenderHud(DrawContext context) {
                 if (mc.targetedEntity instanceof net.minecraft.entity.LivingEntity target) {
@@ -43,15 +43,33 @@ public class ModuleManager {
                 }
             }
         });
+        
+        modules.add(new Module("ArmorHUD", Category.HUD, 0) {
+            @Override public void onRenderHud(DrawContext context) {
+                int y = 50;
+                for (int i = 3; i >= 0; i--) {
+                    ItemStack stack = mc.player.getInventory().getArmorStack(i);
+                    if (!stack.isEmpty()) {
+                        context.drawItem(stack, 10, y);
+                        y += 20;
+                    }
+                }
+            }
+        });
 
-        // HUD & MISC (все остальное из твоего списка)
-        String[] other = {"Waypoints", "Friends", "ItemScroller", "Optimization", "FreeLook", "ChunkOpt", "BlockOverlay", "Crosshair", "CustomHand", "Macros", "ShulkerView", "ItemGlow", "InfoHUD", "ArmorHUD", "PingFix"};
-        for (String s : other) modules.add(new Module(s, Category.MISC, 0) {});
+        // Остальные заглушки для меню
+        String[] misc = {"FreeLook", "Waypoints", "Friends", "FastSwap", "Optimization", "HitColor", "HitboxColor", "Macros", "ShulkerView", "Crosshair"};
+        for (String s : misc) {
+            modules.add(new Module(s, Category.MISC, 0) {});
+        }
     }
 
     public static List<Module> getModules() { return modules; }
+    
     public static Module getModule(String name) {
-        for (Module m : modules) if (m.name.equalsIgnoreCase(name)) return m;
+        for (Module m : modules) {
+            if (m.name.equalsIgnoreCase(name)) return m;
+        }
         return null;
     }
 }
