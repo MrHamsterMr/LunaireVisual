@@ -13,7 +13,7 @@ public class Config {
             for (Module m : ModuleManager.getModules()) {
                 out.println(m.getName() + ":" + m.isEnabled() + ":" + m.getKey());
             }
-        } catch (Exception ignored) {}
+        } catch (IOException ignored) {}
     }
 
     public static void load() {
@@ -21,6 +21,7 @@ public class Config {
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
+                if (line.isEmpty()) continue;
                 String[] parts = line.split(":");
                 if (parts.length < 3) continue;
                 Module m = ModuleManager.getModule(parts[0]);
