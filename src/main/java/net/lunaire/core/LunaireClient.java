@@ -10,7 +10,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,19 +21,18 @@ public class LunaireClient implements ClientModInitializer {
         ModuleManager.init();
         Config.load();
 
-        // Команда .bind
         ClientSendMessageEvents.ALLOW_CHAT.register(message -> {
             if (message.startsWith(".bind")) {
                 String[] args = message.split(" ");
                 if (args.length < 3) {
-                    MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §7Используй: .bind <модуль> <клавиша>"), false);
+                    MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §7Используй: .bind <модуль> <кнопка>"), false);
                 } else {
                     Module m = ModuleManager.getModule(args[1]);
                     if (m != null) {
                         int key = args[2].toUpperCase().charAt(0);
                         m.setKey(key);
                         Config.save();
-                        MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §fКлавиша §e" + args[2] + " §fназначена!"), false);
+                        MinecraftClient.getInstance().player.sendMessage(Text.of("§b[Lunaire] §fБинд §e" + args[2] + " §fустановлен!"), false);
                     }
                 }
                 return false;
@@ -65,7 +63,9 @@ public class LunaireClient implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            for (Module m : ModuleManager.getModules()) if (m.isEnabled()) m.onRenderHud(context);
+            for (Module m : ModuleManager.getModules()) {
+                if (m.isEnabled()) m.onRenderHud(context);
+            }
         });
     }
 }
