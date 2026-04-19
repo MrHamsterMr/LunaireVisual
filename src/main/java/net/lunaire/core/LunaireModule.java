@@ -23,11 +23,8 @@ public abstract class LunaireModule {
     }
 
     public void addSetting(Setting s) { settings.add(s); }
-    
     public Setting getSetting(String name) {
-        for (Setting s : settings) {
-            if (s.name.equalsIgnoreCase(name)) return s;
-        }
+        for (Setting s : settings) if (s.name.equalsIgnoreCase(name)) return s;
         return null;
     }
 
@@ -41,9 +38,4 @@ public abstract class LunaireModule {
     public void onDisable() {}
     public void onTick() {}
     public void onRenderHud(DrawContext context) {}
-
-    public String getName() { return name; }
-    public Category getCategory() { return category; }
-    public boolean isEnabled() { return enabled; }
-    public void setKey(int key, boolean mouse) { this.key = key; this.isMouse = mouse; }
 }
