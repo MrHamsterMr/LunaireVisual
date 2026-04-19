@@ -5,9 +5,8 @@
   "mixins": [
     "IMinecraftClient",
     "MixinGameRenderer",
+    "MixinInGameHud",
     "MixinClientPlayNetworkHandler"
   ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  "injectors": { "defaultRequire": 1 }
 }
