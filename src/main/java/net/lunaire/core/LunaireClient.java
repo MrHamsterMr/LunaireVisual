@@ -24,23 +24,30 @@ public class LunaireClient implements ClientModInitializer {
             long win = client.getWindow().getHandle();
 
             if (InputUtil.isKeyPressed(win, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
-                if (!(client.currentScreen instanceof ClickGuiScreen)) client.setScreen(new ClickGuiScreen());
+                if (!(client.currentScreen instanceof ClickGuiScreen)) {
+                    client.setScreen(new ClickGuiScreen());
+                }
             }
 
+            // Используем LunaireModule вместо Module
             for (LunaireModule m : ModuleManager.getModules()) {
                 if (m.key != 0) {
                     boolean down = m.isMouse ? GLFW.glfwGetMouseButton(win, m.key) == GLFW.GLFW_PRESS : InputUtil.isKeyPressed(win, m.key);
                     if (down && !PRESSED.contains(m.key)) {
                         m.toggle();
                         PRESSED.add(m.key);
-                    } else if (!down) PRESSED.remove(Integer.valueOf(m.key));
+                    } else if (!down) {
+                        PRESSED.remove(Integer.valueOf(m.key));
+                    }
                 }
-                if (m.enabled) m.onTick();
+                if (m.isEnabled()) m.onTick();
             }
         });
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            for (LunaireModule m : ModuleManager.getModules()) if (m.enabled) m.onRenderHud(context);
+            for (LunaireModule m : ModuleManager.getModules()) {
+                if (m.isEnabled()) m.onRenderHud(context);
+            }
         });
     }
 }
