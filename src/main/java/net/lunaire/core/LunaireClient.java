@@ -2,6 +2,7 @@ package net.lunaire.core;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.lunaire.features.ModuleManager;
 import net.lunaire.ui.ClickGuiScreen;
 import net.minecraft.client.MinecraftClient;
@@ -22,19 +23,29 @@ public class LunaireClient implements ClientModInitializer {
             if (client.player == null) return;
             long win = client.getWindow().getHandle();
 
+            // Открытие меню на Правый Шифт
             if (InputUtil.isKeyPressed(win, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
                 if (!(client.currentScreen instanceof ClickGuiScreen)) client.setScreen(new ClickGuiScreen());
             }
 
             for (Module m : ModuleManager.getModules()) {
                 if (m.key != 0) {
-                    boolean down = InputUtil.isKeyPressed(win, m.key);
-                    if (down && !PRESSED.contains(m.key)) {
+                    boolean isDown = m.isMouse ? GLFW.glfwGetMouseButton(win, m.key) == GLFW.GLFW_PRESS : InputUtil.isKeyPressed(win, m.key);
+                    
+                    if (isDown && !PRESSED.contains(m.key)) {
                         m.toggle();
                         PRESSED.add(m.key);
-                    } else if (!down) PRESSED.remove(Integer.valueOf(m.key));
+                    } else if (!isDown) {
+                        PRESSED.remove(Integer.valueOf(m.key));
+                    }
                 }
                 if (m.isEnabled()) m.onTick();
+            }
+        });
+
+        HudRenderCallback.EVENT.register((context, tickDelta) -> {
+            for (Module m : ModuleManager.getModules()) {
+                if (m.isEnabled()) m.onRenderHud(context);
             }
         });
     }
