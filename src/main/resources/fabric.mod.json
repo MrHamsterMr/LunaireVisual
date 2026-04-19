@@ -2,12 +2,8 @@
   "schemaVersion": 1,
   "id": "lunaire",
   "version": "1.0.0",
-  "name": "Lunaire",
-  "entrypoints": {
-    "client": [
-      "net.lunaire.core.LunaireClient"
-    ]
-  },
+  "name": "Lunaire Visual",
+  "entrypoints": { "client": [ "net.lunaire.core.LunaireClient" ] },
   "mixins": [ "lunaire.mixins.json" ],
   "depends": { "fabricloader": ">=0.16.7", "minecraft": "1.21.4", "java": ">=21" }
 }
