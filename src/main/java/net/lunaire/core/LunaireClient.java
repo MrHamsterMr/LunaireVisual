@@ -29,16 +29,13 @@ public class LunaireClient implements ClientModInitializer {
                 }
             }
 
-            // Используем LunaireModule вместо Module
             for (LunaireModule m : ModuleManager.getModules()) {
                 if (m.key != 0) {
                     boolean down = m.isMouse ? GLFW.glfwGetMouseButton(win, m.key) == GLFW.GLFW_PRESS : InputUtil.isKeyPressed(win, m.key);
                     if (down && !PRESSED.contains(m.key)) {
                         m.toggle();
                         PRESSED.add(m.key);
-                    } else if (!down) {
-                        PRESSED.remove(Integer.valueOf(m.key));
-                    }
+                    } else if (!down) PRESSED.remove(Integer.valueOf(m.key));
                 }
                 if (m.isEnabled()) m.onTick();
             }
