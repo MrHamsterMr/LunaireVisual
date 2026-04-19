@@ -20,7 +20,8 @@ public class Config {
         if (!file.exists()) return;
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
-                String[] parts = scanner.nextLine().split(":");
+                String line = scanner.nextLine();
+                String[] parts = line.split(":");
                 if (parts.length < 3) continue;
                 Module m = ModuleManager.getModule(parts[0]);
                 if (m != null) {
