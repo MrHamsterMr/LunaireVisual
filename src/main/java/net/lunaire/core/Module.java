@@ -2,6 +2,8 @@ package net.lunaire.core;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Module {
     protected static final MinecraftClient mc = MinecraftClient.getInstance();
@@ -9,13 +11,20 @@ public abstract class Module {
     public Category category;
     public boolean enabled = false;
     public int key;
-    public boolean isMouse = false; // Бинд на мышку или клаву
+    public boolean isMouse = false;
     public boolean binding = false;
+    public boolean showSettings = false; // Открыты ли настройки модуля
+    public List<Setting> settings = new ArrayList<>();
 
     public Module(String name, Category category, int key) {
         this.name = name;
         this.category = category;
         this.key = key;
+    }
+
+    public void addSetting(Setting s) { settings.add(s); }
+    public Setting getSetting(String name) {
+        return settings.stream().filter(s -> s.name.equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     public void toggle() {
@@ -29,9 +38,8 @@ public abstract class Module {
     public void onTick() {}
     public void onRenderHud(DrawContext context) {}
 
-    public String getName() { return name; }
     public Category getCategory() { return category; }
+    public String getName() { return name; }
     public boolean isEnabled() { return enabled; }
-    public int getKey() { return key; }
     public void setKey(int key, boolean mouse) { this.key = key; this.isMouse = mouse; }
 }
