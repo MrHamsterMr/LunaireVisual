@@ -8,8 +8,12 @@ public abstract class Module {
     public String name;
     public Category category;
     public boolean enabled = false;
-    public int key;
+    public int key; // Код клавиши или кнопки мыши
+    public boolean isMouseBind = false; // Флаг: бинд на мышь или клаву
     public boolean binding = false;
+
+    // Настройки для углубления (пример: цвет удара)
+    public int hitColorRGB = 0xFF0000; // По умолчанию красный
 
     public Module(String name, Category category, int key) {
         this.name = name;
@@ -32,5 +36,5 @@ public abstract class Module {
     public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
     public int getKey() { return key; }
-    public void setKey(int key) { this.key = key; }
+    public void setKey(int key, boolean mouse) { this.key = key; this.isMouseBind = mouse; }
 }
