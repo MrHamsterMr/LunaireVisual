@@ -11,7 +11,7 @@ public class Config {
     public static void save() {
         try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
             for (Module m : ModuleManager.getModules()) {
-                out.println(m.name + ":" + m.enabled + ":" + m.key);
+                out.println(m.name + ":" + m.enabled + ":" + m.key + ":" + m.isMouse);
             }
         } catch (Exception e) {}
     }
@@ -22,11 +22,12 @@ public class Config {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(":");
-                if (parts.length < 3) continue;
+                if (parts.length < 4) continue;
                 Module m = ModuleManager.getModule(parts[0]);
                 if (m != null) {
                     if (Boolean.parseBoolean(parts[1])) m.enabled = true;
                     m.key = Integer.parseInt(parts[2]);
+                    m.isMouse = Boolean.parseBoolean(parts[3]);
                 }
             }
         } catch (Exception e) {}
