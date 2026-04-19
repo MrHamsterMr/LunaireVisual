@@ -16,15 +16,14 @@ public class ClickGuiScreen extends Screen {
         for (Category cat : Category.values()) {
             int y = 40;
             context.fill(x, y, x + 110, y + 15, 0xFF00FBFF);
-            context.drawText(textRenderer, cat.name(), x + 5, y + 4, 0, false);
+            context.drawText(textRenderer, cat.name(), x + 5, y + 4, 0x0, false);
             y += 18;
 
             for (LunaireModule m : ModuleManager.getModules()) {
-                if (m.getCategory() == cat) {
-                    int bgColor = m.isEnabled() ? 0xBF00FBFF : 0x90151515;
-                    context.fill(x, y, x + 90, y + 14, bgColor);
+                if (m.category == cat) {
+                    int color = m.isEnabled() ? 0xBF00FBFF : 0x90151515;
+                    context.fill(x, y, x + 90, y + 14, color);
                     context.drawText(textRenderer, m.name, x + 4, y + 3, -1, false);
-
                     context.fill(x + 92, y, x + 110, y + 14, 0x90303030);
                     context.drawText(textRenderer, ">", x + 98, y + 3, -1, false);
 
@@ -49,10 +48,9 @@ public class ClickGuiScreen extends Screen {
         for (Category cat : Category.values()) {
             int y = 58;
             for (LunaireModule m : ModuleManager.getModules()) {
-                if (m.getCategory() == cat) {
+                if (m.category == cat) {
                     if (mouseX >= x && mouseX <= x + 90 && mouseY >= y && mouseY <= y + 14) {
-                        if (m.binding) { m.setKey(button, true); m.binding = false; }
-                        else { if (button == 0) m.toggle(); if (button == 1) m.binding = true; }
+                        if (button == 0) m.toggle();
                         return true;
                     }
                     if (mouseX >= x + 92 && mouseX <= x + 110 && mouseY >= y && mouseY <= y + 14) {
