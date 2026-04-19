@@ -6,9 +6,10 @@
     "IMinecraftClient",
     "MixinGameRenderer",
     "MixinInGameHud",
-    "MixinClientPlayNetworkHandler"
+    "MixinClientPlayNetworkHandler",
+    "MixinCamera",
+    "MixinItemStack",
+    "MixinLivingEntity"
   ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  "injectors": { "defaultRequire": 1 }
 }
