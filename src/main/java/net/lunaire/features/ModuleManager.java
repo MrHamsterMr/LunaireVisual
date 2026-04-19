@@ -3,7 +3,6 @@ package net.lunaire.features;
 import net.lunaire.core.*;
 import net.lunaire.mixin.IMinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
@@ -16,47 +15,34 @@ public class ModuleManager {
     public static void init() {
         modules.clear();
 
-        // --- COMBAT ---
-        LunaireModule fastSwap = new LunaireModule("FastSwap", Category.COMBAT, 0) {
-            @Override public void onTick() {
-                if (mc.player != null) {
-                    Setting s = getSetting("Slot");
-                    mc.player.getInventory().selectedSlot = (int)s.dVal - 1;
-                }
-            }
-        };
-        fastSwap.addSetting(new Setting("Slot", 1.0));
-        modules.add(fastSwap);
-
-        modules.add(new LunaireModule("FastExp", Category.COMBAT, 0) {
-            @Override public void onTick() {
-                if (mc.options.useKey.isPressed() && mc.player.getMainHandStack().isOf(Items.EXPERIENCE_BOTTLE)) {
-                    ((IMinecraftClient)mc).setItemUseCooldown(0);
-                }
-            }
-        });
-
-        // --- VISUAL ---
+        // Zoom (№9)
         modules.add(new LunaireModule("Zoom", Category.VISUAL, GLFW.GLFW_KEY_C) {});
-        
+
+        // NoRender (№20)
         LunaireModule noRender = new LunaireModule("NoRender", Category.VISUAL, 0) {};
-        noRender.addSetting(new Setting("NoShake", true));
         noRender.addSetting(new Setting("NoFire", true));
+        noRender.addSetting(new Setting("NoShake", true));
         modules.add(noRender);
 
-        modules.add(new LunaireModule("TargetHUD", Category.VISUAL, 0) {
-            @Override public void onRenderHud(DrawContext context) {
-                if (mc.targetedEntity instanceof LivingEntity target) {
-                    int x = 100, y = 100;
-                    context.fill(x, y, x + 120, y + 40, 0x90000000);
-                    context.drawText(mc.textRenderer, target.getName().getString(), x + 5, y + 5, -1, true);
-                    context.drawText(mc.textRenderer, (int)target.getHealth() + " HP", x + 5, y + 15, 0xFF00FBFF, true);
+        // ArmorHUD (№5)
+        modules.add(new LunaireModule("ArmorHUD", Category.HUD, 0) {
+            @Override
+            public void onRenderHud(DrawContext context) {
+                int y = 70;
+                for (int i = 3; i >= 0; i--) {
+                    ItemStack s = mc.player.getInventory().getArmorStack(i);
+                    if (!s.isEmpty()) {
+                        context.drawItem(s, 10, y);
+                        int dur = s.getMaxDamage() - s.getDamage();
+                        context.drawText(mc.textRenderer, String.valueOf(dur), 32, y + 5, -1, true);
+                        y += 20;
+                    }
                 }
             }
         });
 
-        // Заглушки для остальных из списка 23
-        String[] rest = {"Waypoints", "Friends", "FreeLook", "HitColor", "ArmorHUD", "Macros", "ItemScroller", "Optimization", "FullBright"};
+        // Заглушки для всех остальных (чтобы меню было полным)
+        String[] rest = {"FastSwap", "FastExp", "TotemPop", "HitColor", "TargetHUD", "Waypoints", "Friends", "FreeLook", "Macros", "FullBright"};
         for (String s : rest) modules.add(new LunaireModule(s, Category.MISC, 0) {});
     }
 
