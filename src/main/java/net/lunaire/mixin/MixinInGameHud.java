@@ -15,7 +15,7 @@ public class MixinInGameHud {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        // Базовый метод рендера HUD
+        // Метод для связи с HUD
     }
 
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
