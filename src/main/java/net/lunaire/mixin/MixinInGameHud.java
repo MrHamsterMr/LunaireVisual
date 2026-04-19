@@ -12,21 +12,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-
     @Inject(method = "render", at = @At("HEAD"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         for (Module m : ModuleManager.getModules()) {
-            if (m.isEnabled()) {
-                m.onRenderHud(context);
-            }
+            if (m.isEnabled()) m.onRenderHud(context);
         }
     }
 
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
     private void onRenderFire(DrawContext context, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
-        if (m != null && m.isEnabled()) {
-            ci.cancel();
-        }
+        if (m != null && m.isEnabled()) ci.cancel();
     }
 }
