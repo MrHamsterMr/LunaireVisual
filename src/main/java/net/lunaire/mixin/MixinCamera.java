@@ -1,6 +1,6 @@
 package net.lunaire.mixin;
 
-import net.lunaire.core.Module;
+import net.lunaire.core.LunaireModule;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.client.render.Camera;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,11 +16,8 @@ public abstract class MixinCamera {
 
     @Inject(method = "update", at = @At("RETURN"))
     private void onUpdate(net.minecraft.world.BlockView area, net.minecraft.entity.Entity entity, boolean tp, boolean inv, float tick, CallbackInfo ci) {
-        Module m = ModuleManager.getModule("FreeLook");
-        if (m != null && m.isEnabled()) {
-            // Заглушка: камера перестает вращаться вместе с игроком
-            this.setRotation(this.yaw, this.pitch);
-        }
+        LunaireModule m = ModuleManager.getModule("FreeLook");
+        if (m != null && m.isEnabled()) this.setRotation(this.yaw, this.pitch);
     }
     @Shadow protected abstract void setRotation(float yaw, float pitch);
 }
