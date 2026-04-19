@@ -13,13 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
 
-    // Исправленный метод для 1.21.4 (использует RenderTickCounter)
     @Inject(method = "render", at = @At("HEAD"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        // Здесь можно вызвать отрисовку HUD модулей, если нужно
+        // Базовый метод рендера HUD
     }
 
-    // Безопасное удаление огня
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
     private void onRenderFire(DrawContext context, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
