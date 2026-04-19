@@ -2,7 +2,7 @@ package net.lunaire.ui;
 
 import net.lunaire.core.Category;
 import net.lunaire.core.Module;
-import net.lunaire.core.ModuleManager;
+import net.lunaire.features.ModuleManager; // ИСПРАВЛЕНО: теперь путь в features
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
