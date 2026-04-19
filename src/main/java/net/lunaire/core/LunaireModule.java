@@ -11,7 +11,7 @@ public abstract class LunaireModule {
     public Category category;
     public boolean enabled = false;
     public int key;
-    public boolean isMouse = false; 
+    public boolean isMouse = false;
     public boolean binding = false;
     public boolean showSettings = false;
     public List<Setting> settings = new ArrayList<>();
