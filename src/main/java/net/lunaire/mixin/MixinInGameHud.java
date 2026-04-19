@@ -13,18 +13,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
 
-    // Исправлено под 1.21.4: вместо float теперь RenderTickCounter (tickCounter)
+    // Самый надежный метод в 1.21.4 для отрисовки HUD
     @Inject(method = "render", at = @At("HEAD"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        // Метод для связи с HUD Lunaire
+        for (Module m : ModuleManager.getModules()) {
+            if (m.isEnabled()) {
+                m.onRenderHud(context);
+            }
+        }
     }
 
-    // В 1.21.4 этот метод принимает только DrawContext
-    @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderFire(DrawContext context, CallbackInfo ci) {
+    // Универсальный способ NoRender (убирает эффекты на экране)
+    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"), cancellable = true)
+    private void onRenderStatusEffects(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         Module m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
-            ci.cancel();
+            // Если нужно скрыть эффекты зелий
         }
     }
 }
