@@ -11,47 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-
-    // 1. Убираем/опускаем огонь на экране (Часть №20 NoRender)
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderFire(DrawContext context, CallbackInfo ci) {
-        if (isModuleEnabled("NoRender")) {
-            // Если включен NoRender, мы просто отменяем отрисовку огня
-            ci.cancel();
-        } else if (isModuleEnabled("LowFire")) {
-            // Если включен LowFire, мы опускаем его пониже
-            context.getMatrices().push();
-            context.getMatrices().translate(0, -0.3f, 0); // Опускаем на 30% вниз
-            // Отрисовка продолжится, но со смещением
-            context.getMatrices().pop();
-        }
-    }
-
-    // 2. Убираем эффект тошноты от портала (№20 NoRender)
-    @Inject(method = "renderPortalOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderPortal(DrawContext context, float nauseaStrength, CallbackInfo ci) {
-        if (isModuleEnabled("NoRender")) {
-            ci.cancel();
-        }
-    }
-
-    // 3. Убираем рамку подзорной трубы (Помогает для №9 Zoom)
-    @Inject(method = "renderSpyglassOverlay", at = @At("HEAD"), cancellable = true)
-    private void onRenderSpyglass(DrawContext context, float scale, CallbackInfo ci) {
-        if (isModuleEnabled("Zoom") || isModuleEnabled("NoRender")) {
-            ci.cancel();
-        }
-    }
-
-    /**
-     * Вспомогательный метод для проверки состояния модулей
-     */
-    private boolean isModuleEnabled(String name) {
-        for (Module m : ModuleManager.getModules()) {
-            if (m.getName().equalsIgnoreCase(name) && m.isEnabled()) {
-                return true;
-            }
-        }
-        return false;
+    private void onFire(DrawContext context, CallbackInfo ci) {
+        Module m = ModuleManager.getModule("NoRender");
+        if (m != null && m.isEnabled()) ci.cancel();
     }
 }
