@@ -1,5 +1,4 @@
 package net.lunaire.mixin;
-
 import net.lunaire.core.LunaireModule;
 import net.lunaire.features.ModuleManager;
 import net.minecraft.item.ItemStack;
@@ -15,8 +14,6 @@ public class MixinItemStack {
     @Inject(method = "getTooltip", at = @At("RETURN"))
     private void onGetTooltip(CallbackInfoReturnable<List<Text>> info) {
         LunaireModule shulkerView = ModuleManager.getModule("ShulkerView");
-        if (shulkerView != null && shulkerView.isEnabled()) {
-            // Логика будет дополнена
-        }
+        if (shulkerView != null && shulkerView.enabled) { /* База */ }
     }
 }
