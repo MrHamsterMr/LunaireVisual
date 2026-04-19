@@ -21,6 +21,4 @@ public abstract class Module {
 
     public void onTick() {}
     public void onRenderHud(DrawContext context) {}
-
-    public enum Category { COMBAT, VISUAL, MISC, HUD }
 }
