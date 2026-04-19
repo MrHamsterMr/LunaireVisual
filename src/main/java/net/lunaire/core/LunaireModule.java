@@ -11,7 +11,7 @@ public abstract class LunaireModule {
     public Category category;
     public boolean enabled = false;
     public int key;
-    public boolean isMouse = false;
+    public boolean isMouse = false; 
     public boolean binding = false;
     public boolean showSettings = false;
     public List<Setting> settings = new ArrayList<>();
@@ -23,8 +23,11 @@ public abstract class LunaireModule {
     }
 
     public void addSetting(Setting s) { settings.add(s); }
+    
     public Setting getSetting(String name) {
-        for (Setting s : settings) if (s.name.equalsIgnoreCase(name)) return s;
+        for (Setting s : settings) {
+            if (s.name.equalsIgnoreCase(name)) return s;
+        }
         return null;
     }
 
