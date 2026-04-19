@@ -23,15 +23,12 @@ public class MixinGameRenderer {
         }
     }
 
-    // Исправленный дескриптор для 1.21.4
     @Inject(method = "bobViewWhenHurt", at = @At("HEAD"), cancellable = true)
     private void onHurtTilt(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         LunaireModule m = ModuleManager.getModule("NoRender");
         if (m != null && m.isEnabled()) {
             Setting s = m.getSetting("NoShake");
-            if (s != null && s.bVal) {
-                ci.cancel();
-            }
+            if (s != null && s.bVal) ci.cancel();
         }
     }
 }
