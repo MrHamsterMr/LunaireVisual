@@ -13,7 +13,9 @@ public class Config {
             for (LunaireModule m : ModuleManager.getModules()) {
                 out.println(m.name + ":" + m.enabled + ":" + m.key + ":" + m.isMouse);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void load() {
@@ -30,6 +32,8 @@ public class Config {
                     m.isMouse = Boolean.parseBoolean(parts[3]);
                 }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
