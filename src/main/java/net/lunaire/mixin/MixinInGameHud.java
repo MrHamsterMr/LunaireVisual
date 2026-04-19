@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-    // Системное имя метода render
-    @Inject(method = "method_3185", at = @At("HEAD"))
+
+    @Inject(method = "render", at = @At("HEAD"))
     private void onRenderLunaire(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         for (LunaireModule m : ModuleManager.getModules()) {
             if (m.isEnabled()) {
