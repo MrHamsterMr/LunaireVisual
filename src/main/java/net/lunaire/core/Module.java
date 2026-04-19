@@ -1,5 +1,4 @@
 package net.lunaire.core;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 
