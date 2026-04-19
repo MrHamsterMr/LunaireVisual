@@ -1,4 +1,5 @@
 package net.lunaire.core;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ public abstract class LunaireModule {
     public List<Setting> settings = new ArrayList<>();
 
     public LunaireModule(String name, Category category, int key) {
-        this.name = name; this.category = category; this.key = key;
+        this.name = name;
+        this.category = category;
+        this.key = key;
     }
 
     public void addSetting(Setting s) { settings.add(s); }
