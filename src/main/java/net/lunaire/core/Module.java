@@ -9,27 +9,21 @@ public abstract class Module {
     private Category category;
     private boolean enabled = false;
     private int key;
-    public boolean binding = false;
 
-    public Module(String name, Category category, int defaultKey) {
+    // Конструктор с ТРЕМЯ аргументами
+    public Module(String name, Category category, int key) {
         this.name = name;
         this.category = category;
-        this.key = defaultKey;
+        this.key = key;
     }
-
-    public void toggle() {
-        this.enabled = !this.enabled;
-        if (enabled) onEnable(); else onDisable();
-    }
-
-    public void onEnable() {}
-    public void onDisable() {}
-    public void onTick() {}
-    public void onRenderHud(DrawContext context) {}
 
     public String getName() { return name; }
     public Category getCategory() { return category; }
     public boolean isEnabled() { return enabled; }
+    public void toggle() { this.enabled = !this.enabled; }
     public int getKey() { return key; }
     public void setKey(int key) { this.key = key; }
+
+    public void onTick() {}
+    public void onRenderHud(DrawContext context) {}
 }
